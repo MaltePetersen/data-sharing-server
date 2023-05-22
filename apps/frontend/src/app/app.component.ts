@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { interval } from 'rxjs';
 
@@ -8,6 +8,11 @@ import { interval } from 'rxjs';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  @ViewChild('fileUpload')
+  private fileUpload!: ElementRef<HTMLInputElement>;
+
+  isUploaded = false;
+
   milliSecondsInASecond = 1000;
   hoursInADay = 24;
   minutesInAnHour = 60;
@@ -28,6 +33,10 @@ export class AppComponent {
   calculateUntilDestroyed(creation: Date) {
     this.untilDestroyed = creation.getTime() - new Date(Date.now()).getTime();
     this.allocateTimeUnits(this.untilDestroyed);
+  }
+
+  reset() {
+    location.reload();
   }
 
   updateTimeWithAmountToDelete(creation: Date, min: number) {
@@ -62,6 +71,12 @@ export class AppComponent {
           this.SecondsInAMinute *
           this.hoursInADay)
     );
+  }
+  initFileUpload() {
+    if (!this.isUploaded) {
+      this.isUploaded = true;
+      this.fileUpload.nativeElement.click();
+    }
   }
 
   onFileSelected(event: any) {
