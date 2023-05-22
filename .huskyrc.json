@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "pre-push": "npm test -- --project=frontend --no-watch --browsers ChromeHeadless",
+    "pre-push": "nx test --project=frontend --no-watch --browsers ChromeHeadless",
     "pre-commit": "lint-staged"
   }
 }
