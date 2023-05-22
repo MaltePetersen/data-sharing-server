@@ -1,2 +1,34 @@
-<data-sharing-server-nx-welcome></data-sharing-server-nx-welcome>
-<router-outlet></router-outlet>
+<input
+  type="file"
+  class="file-input"
+  (change)="onFileSelected($event)"
+  #fileUpload
+/>
+
+<div class="file-upload">
+  {{ fileName || 'No file uploaded yet.' }}
+
+  <button
+    mat-mini-fab
+    color="primary"
+    class="upload-btn"
+    (click)="fileUpload.click()"
+  >
+    <mat-icon>attach_file</mat-icon>
+  </button>
+</div>
+
+<ng-container *ngIf="token"
+  >Gib diesen Code in dem Roboter ein zum Upload deines Bildes
+  <h1>{{ token.content }}</h1>
+
+  <p>Aus Sicherheitsgründen wird ihre File in</p>
+  <div class="timer">
+    <h4>Count down timer</h4>
+    <span id="days"> {{ daysToDday }} </span>Day(s)
+    <span id="hours"> {{ hoursToDday }} </span>Hrs
+    <span id="minutes"> {{ minutesToDday }} </span>Min
+    <span id="seconds"> {{ secondsToDday }} </span>S
+  </div>
+  <p>gelöscht</p>
+</ng-container>
