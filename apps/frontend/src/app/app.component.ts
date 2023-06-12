@@ -89,7 +89,7 @@ export class AppComponent {
 
       formData.append('file', file);
 
-      const upload$ = this.http.post('http://localhost:3000/api', formData);
+      const upload$ = this.http.post('http://20.234.11.142:3000/api', formData);
 
       upload$.subscribe((data: any) => {
         this.token = {
