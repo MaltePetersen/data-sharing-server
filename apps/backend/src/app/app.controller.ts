@@ -2,7 +2,10 @@ import {
   Bind,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Logger,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -35,6 +38,17 @@ export class AppController {
       content: Math.floor(10000 + Math.random() * 90000).toString(),
       creation: new Date(Date.now()),
     };
+  }
+  @Get('/file/:token')
+  currentFileToken(@Param() tokenCode: any) {
+    console.log(tokenCode);
+    const tokenExist = this.files$$.value.find(
+      (file: File) => file.token.content === tokenCode.token
+    );
+    if (tokenExist) {
+      return tokenExist;
+    }
+    throw new HttpException('Does not exist', HttpStatus.NOT_FOUND);
   }
 
   @Get()

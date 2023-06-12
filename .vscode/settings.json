@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/d4b7da0e-fee2-42e2-8ffb-47d28a094be2/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/data-sharing-robot",
+  "appService.deploySubpath": "apps"
+}
