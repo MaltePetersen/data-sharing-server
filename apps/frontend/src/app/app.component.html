@@ -19,28 +19,7 @@
       <mat-icon>attach_file</mat-icon>
     </button>
 
-    <ng-container *ngIf="token">
-      <h2>Gib diesen Code in dem Roboter ein zum Upload deines Bildes</h2>
-      <mat-chip-set class="example-chip">
-        <mat-chip
-          class="example-box"
-          *ngFor="let num of token.content.split('')"
-        >
-          {{ num }}
-        </mat-chip>
-      </mat-chip-set>
+      <data-sharing-server-file-dashboard *ngIf="token" [token]="token" [fileName]="fileName"></data-sharing-server-file-dashboard>
 
-      <h2>Aus Sicherheitsgründen wird ihre Datei in</h2>
-      <div class="timer">
-        <span id="minutes"> {{ minutesToDday }} </span>Min
-        <span id="seconds"> {{ secondsToDday }} </span>S
-      </div>
-      <h2>gelöscht</h2>
-
-      <h2 (click)="reset()">
-        Wenn du diese Datei löschen willst und eine neue Datei hochladen willst,
-        klicke einfach auf diesen Text
-      </h2>
-    </ng-container>
   </div>
 </div>

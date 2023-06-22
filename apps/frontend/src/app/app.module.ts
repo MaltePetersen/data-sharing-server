@@ -7,9 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatChipsModule } from '@angular/material/chips';
+import { FileDashboardComponent } from './components/file-dashboard/file-dashboard.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, FileDashboardComponent],
   imports: [
     MatSlideToggleModule,
     BrowserModule,
