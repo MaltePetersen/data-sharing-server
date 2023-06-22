@@ -1,5 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { DataService } from './data.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'data-sharing-server-root',
@@ -7,38 +6,4 @@ import { DataService } from './data.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  @ViewChild('fileUpload')
-  private fileUpload!: ElementRef<HTMLInputElement>;
-
-  isUploaded = false;
-
-  constructor(private dataService: DataService) {}
-
-  token: { content: string; creation: Date } | undefined = undefined;
-
-  fileName = '';
-
-
-
-  initFileUpload() {
-    if (!this.isUploaded) {
-      this.isUploaded = true;
-      this.fileUpload.nativeElement.click();
-    }
-  }
-
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-
-
-    if (file) {
-      this.fileName = file.name;
-      this.dataService.uploadFile(file).subscribe((data: any) => {
-        this.token = {
-          content: data.content,
-          creation: new Date(data.creation),
-        };
-      });
-    }
-  }
 }

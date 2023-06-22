@@ -8,9 +8,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatChipsModule } from '@angular/material/chips';
 import { FileDashboardComponent } from './components/file-dashboard/file-dashboard.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 
 @NgModule({
-  declarations: [AppComponent, FileDashboardComponent],
+  declarations: [AppComponent, FileDashboardComponent, FileUploadComponent],
   imports: [
     MatSlideToggleModule,
     BrowserModule,

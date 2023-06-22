@@ -1,0 +1,21 @@
+<div class="container" (click)="initFileUpload()">
+  <div class="innerContainer">
+    <input
+      type="file"
+      class="file-input"
+      (change)="onFileSelected($event)"
+      #fileUpload
+    />
+
+    <h1 *ngIf="!isUploaded">
+  Klicke auf den Bildschirm um deine Datei hochzuladen
+    </h1>
+
+    <button *ngIf="!isUploaded" mat-mini-fab color="primary" class="upload-btn">
+      <mat-icon>attach_file</mat-icon>
+    </button>
+
+
+  </div>
+</div>
+<data-sharing-server-file-dashboard *ngIf="token" [token]="token" [fileName]="fileName"></data-sharing-server-file-dashboard>
