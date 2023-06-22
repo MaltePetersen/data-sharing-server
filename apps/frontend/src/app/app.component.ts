@@ -10,7 +10,8 @@ import { interval } from 'rxjs';
 export class AppComponent {
   @ViewChild('fileUpload')
   private fileUpload!: ElementRef<HTMLInputElement>;
-
+  //http://20.234.11.142:3000
+  private api = "http://localhost:3000"
   isUploaded = false;
 
   milliSecondsInASecond = 1000;
@@ -89,7 +90,7 @@ export class AppComponent {
 
       formData.append('file', file);
 
-      const upload$ = this.http.post('http://20.234.11.142:3000/api', formData);
+      const upload$ = this.http.post(`${this.api}/api`, formData);
 
       upload$.subscribe((data: any) => {
         this.token = {
