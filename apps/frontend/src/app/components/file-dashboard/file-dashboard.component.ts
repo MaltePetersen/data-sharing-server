@@ -3,6 +3,7 @@ import { interval, tap } from 'rxjs';
 import { FileService } from '../../services/files.service';
 import { Token } from '../../model/token.model';
 import { Router } from '@angular/router';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'data-sharing-server-file-dashboard',
@@ -11,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class FileDashboardComponent implements OnInit{
 
-  constructor(private fileService: FileService, router: Router){
+  constructor(private fileService: FileService, router: Router, private dataService: DataService){
     fileService.fileName$.subscribe(name => this.fileName = name)
     fileService.token$.pipe(tap(token => {
       if(!token) router.navigate([''])
@@ -49,6 +50,7 @@ export class FileDashboardComponent implements OnInit{
   }
 
   reset() {
+    if(this.token) this.dataService.deleteFile(this.token.content).subscribe()
     this.fileService.updateFileName('');
     this.fileService.updateToken(null);
   }

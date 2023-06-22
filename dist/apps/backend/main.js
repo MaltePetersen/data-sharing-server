@@ -29,6 +29,9 @@ let AppController = AppController_1 = class AppController {
     upload(file) {
         return this.appService.save(file);
     }
+    delete(tokenCode) {
+        return this.appService.deleteByToken(tokenCode.token);
+    }
 };
 tslib_1.__decorate([
     (0, common_1.Get)('/file/:token'),
@@ -51,6 +54,13 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof Content_model_1.Content !== "undefined" && Content_model_1.Content) === "function" ? _b : Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], AppController.prototype, "upload", null);
+tslib_1.__decorate([
+    (0, common_1.Delete)('/file/:token'),
+    tslib_1.__param(0, (0, common_1.Param)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], AppController.prototype, "delete", null);
 AppController = AppController_1 = tslib_1.__decorate([
     (0, common_1.Controller)(),
     tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof app_service_1.AppService !== "undefined" && app_service_1.AppService) === "function" ? _a : Object])
@@ -105,6 +115,9 @@ let AppService = class AppService {
     }
     getAllFiles() {
         return this.filesService.getAll();
+    }
+    deleteByToken(token) {
+        return this.filesService.deleteByToken(token);
     }
     getFileByToken(tokenCode) {
         const file = this.filesService.getByToken(tokenCode);
@@ -176,6 +189,11 @@ let FilesService = class FilesService {
     delete(fileId) {
         const files = this.getAll();
         const newFiles = files.filter((file) => file.id !== fileId);
+        this.files$$.next(newFiles);
+    }
+    deleteByToken(token) {
+        const files = this.getAll();
+        const newFiles = files.filter((file) => file.token.content !== token);
         this.files$$.next(newFiles);
     }
 };

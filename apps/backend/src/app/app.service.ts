@@ -20,6 +20,10 @@ export class AppService {
     return this.filesService.getAll();
   }
 
+  deleteByToken(token: string){
+    return this.filesService.deleteByToken(token);
+  }
+
   getFileByToken(tokenCode: any){
     const file = this.filesService.getByToken(tokenCode);
 
@@ -55,6 +59,7 @@ export class AppService {
       creation: new Date(Date.now()),
     };
   }
+  
   private calculateTimerLength(min: number){
     return min * 60 * 1000
    }

@@ -25,4 +25,8 @@ export class DataService  {
     return upload$
   }
 
+  deleteFile(token: string){
+   return this.http.delete(`${this.api}/api/file/${token}`)
+  }
+
 }

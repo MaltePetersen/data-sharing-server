@@ -1,6 +1,7 @@
 import {
   Bind,
   Controller,
+  Delete,
   Get,
   Logger,
   Param,
@@ -38,6 +39,11 @@ export class AppController {
   @Bind(UploadedFile())
   upload(file: Content) {
     return this.appService.save(file)
+  }
+
+  @Delete('/file/:token')
+  delete(@Param() tokenCode: any){
+    return this.appService.deleteByToken(tokenCode.token);
   }
 
 

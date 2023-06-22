@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class FilesService {
 
-
   private files$$ = new BehaviorSubject<File[]>([]);
   public files$ = this.files$$.asObservable();
 
@@ -30,6 +29,12 @@ export class FilesService {
    delete(fileId) {
     const files = this.getAll();
     const newFiles = files.filter((file: File) => file.id !== fileId);
+    this.files$$.next(newFiles);
+  }
+
+  deleteByToken(token: string){
+    const files = this.getAll();
+    const newFiles = files.filter((file: File) => file.token.content !== token);
     this.files$$.next(newFiles);
   }
 
