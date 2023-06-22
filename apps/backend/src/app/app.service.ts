@@ -4,59 +4,61 @@ import { File } from './model/File.model';
 import { v4 as uuidv4 } from 'uuid';
 import { Content } from './model/Content.model';
 import { Token } from './model/Token.model';
+import { FilesService } from './files.service';
 
 @Injectable()
 export class AppService {
 
-  timerDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+  constructor(private filesService: FilesService){}
+
+
 
   private files$$ = new BehaviorSubject<File[]>([]);
   public files$ = this.files$$.asObservable();
 
   getAllFiles(){
-    return this.files$$.value;
+    return this.filesService.getAll();
   }
-  generateToken(): Token {
+
+  getFileByToken(tokenCode: any){
+    const file = this.filesService.getByToken(tokenCode);
+
+    if (file) {
+      this.filesService.delete(file.id)
+      return file;
+    }
+    throw new HttpException('Does not exist', HttpStatus.NOT_FOUND);
+  }
+
+  save(content: Content){
+    const newFile = this.convertToFile(content);
+
+    this.filesService.add(newFile);
+
+    setTimeout(() => this.filesService.delete(newFile.id), this.calculateTimerLength(30));
+    return newFile.token;
+  }
+
+  private convertToFile(content: Content){
+   return{
+      id: uuidv4(),
+      name: content.originalname,
+      content: Buffer.from(content.buffer),
+      uploadDate: new Date(Date.now()),
+      token: this.generateToken(),
+    };
+  }
+
+  private generateToken(): Token {
     return {
       content: Math.floor(10000 + Math.random() * 90000).toString(),
       creation: new Date(Date.now()),
     };
   }
-
-  getFileByToken(tokenCode: any){
-    const tokenExist = this.files$$.value.find(
-      (file: File) => file.token.content === tokenCode.token
-    );
-    if (tokenExist) {
-      this.deleteFile(tokenExist.id)
-      return tokenExist;
-    }
-    throw new HttpException('Does not exist', HttpStatus.NOT_FOUND);
-  }
-
-  deleteFile(fileId) {
-    console.log('deletion in Progress');
-    const files = this.files$$.value;
-    const newFiles = files.filter((file: File) => file.id !== fileId);
-    this.files$$.next(newFiles);
-  }
+  private calculateTimerLength(min: number){
+    return min * 60 * 1000
+   }
 
 
 
-  save(content: Content){
-    const token = this.generateToken();
-    const fileToSave = {
-      id: uuidv4(),
-      name: content.originalname,
-      content: Buffer.from(content.buffer),
-      uploadDate: new Date(Date.now()),
-      token: token,
-    };
-    const files = this.files$$.value;
-
-    files.push(fileToSave);
-    this.files$$.next(files);
-    setTimeout(() => this.deleteFile(fileToSave.id), this.timerDuration);
-    return token;
-  }
 }

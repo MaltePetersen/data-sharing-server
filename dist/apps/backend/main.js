@@ -70,14 +70,14 @@ const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const app_controller_1 = __webpack_require__("./src/app/app.controller.ts");
 const app_service_1 = __webpack_require__("./src/app/app.service.ts");
-const schedule_1 = __webpack_require__("@nestjs/schedule");
+const files_service_1 = __webpack_require__("./src/app/files.service.ts");
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [schedule_1.ScheduleModule.forRoot()],
+        imports: [],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, files_service_1.FilesService],
     })
 ], AppModule);
 exports.AppModule = AppModule;
@@ -89,20 +89,45 @@ exports.AppModule = AppModule;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const rxjs_1 = __webpack_require__("rxjs");
 const uuid_1 = __webpack_require__("uuid");
+const files_service_1 = __webpack_require__("./src/app/files.service.ts");
 let AppService = class AppService {
-    constructor() {
-        this.timerDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+    constructor(filesService) {
+        this.filesService = filesService;
         this.files$$ = new rxjs_1.BehaviorSubject([]);
         this.files$ = this.files$$.asObservable();
     }
     getAllFiles() {
-        return this.files$$.value;
+        return this.filesService.getAll();
+    }
+    getFileByToken(tokenCode) {
+        const file = this.filesService.getByToken(tokenCode);
+        if (file) {
+            this.filesService.delete(file.id);
+            return file;
+        }
+        throw new common_1.HttpException('Does not exist', common_1.HttpStatus.NOT_FOUND);
+    }
+    save(content) {
+        const newFile = this.convertToFile(content);
+        this.filesService.add(newFile);
+        setTimeout(() => this.filesService.delete(newFile.id), this.calculateTimerLength(30));
+        return newFile.token;
+    }
+    convertToFile(content) {
+        return {
+            id: (0, uuid_1.v4)(),
+            name: content.originalname,
+            content: Buffer.from(content.buffer),
+            uploadDate: new Date(Date.now()),
+            token: this.generateToken(),
+        };
     }
     generateToken() {
         return {
@@ -110,40 +135,54 @@ let AppService = class AppService {
             creation: new Date(Date.now()),
         };
     }
-    getFileByToken(tokenCode) {
-        const tokenExist = this.files$$.value.find((file) => file.token.content === tokenCode.token);
-        if (tokenExist) {
-            this.deleteFile(tokenExist.id);
-            return tokenExist;
-        }
-        throw new common_1.HttpException('Does not exist', common_1.HttpStatus.NOT_FOUND);
-    }
-    deleteFile(fileId) {
-        console.log('deletion in Progress');
-        const files = this.files$$.value;
-        const newFiles = files.filter((file) => file.id !== fileId);
-        this.files$$.next(newFiles);
-    }
-    save(content) {
-        const token = this.generateToken();
-        const fileToSave = {
-            id: (0, uuid_1.v4)(),
-            name: content.originalname,
-            content: Buffer.from(content.buffer),
-            uploadDate: new Date(Date.now()),
-            token: token,
-        };
-        const files = this.files$$.value;
-        files.push(fileToSave);
-        this.files$$.next(files);
-        setTimeout(() => this.deleteFile(fileToSave.id), this.timerDuration);
-        return token;
+    calculateTimerLength(min) {
+        return min * 60 * 1000;
     }
 };
 AppService = tslib_1.__decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof files_service_1.FilesService !== "undefined" && files_service_1.FilesService) === "function" ? _a : Object])
 ], AppService);
 exports.AppService = AppService;
+
+
+/***/ }),
+
+/***/ "./src/app/files.service.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FilesService = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const rxjs_1 = __webpack_require__("rxjs");
+const common_1 = __webpack_require__("@nestjs/common");
+let FilesService = class FilesService {
+    constructor() {
+        this.files$$ = new rxjs_1.BehaviorSubject([]);
+        this.files$ = this.files$$.asObservable();
+    }
+    getAll() {
+        return this.files$$.value;
+    }
+    getByToken(tokenCode) {
+        return this.files$$.value.find((file) => file.token.content === tokenCode.token);
+    }
+    add(file) {
+        const files = this.getAll();
+        files.push(file);
+        this.files$$.next(files);
+    }
+    delete(fileId) {
+        const files = this.getAll();
+        const newFiles = files.filter((file) => file.id !== fileId);
+        this.files$$.next(newFiles);
+    }
+};
+FilesService = tslib_1.__decorate([
+    (0, common_1.Injectable)()
+], FilesService);
+exports.FilesService = FilesService;
 
 
 /***/ }),
@@ -175,13 +214,6 @@ module.exports = require("@nestjs/core");
 /***/ ((module) => {
 
 module.exports = require("@nestjs/platform-express");
-
-/***/ }),
-
-/***/ "@nestjs/schedule":
-/***/ ((module) => {
-
-module.exports = require("@nestjs/schedule");
 
 /***/ }),
 

@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ScheduleModule } from '@nestjs/schedule';
+import { FilesService } from './files.service';
 
 @Module({
-  imports: [ScheduleModule.forRoot()],
+  imports: [],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, FilesService],
 })
 export class AppModule {}
