@@ -11,9 +11,10 @@ import { FileDashboardComponent } from './components/file-dashboard/file-dashboa
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './app.routes';
+import { DragDirective } from './dragDrop.directive';
 
 @NgModule({
-  declarations: [AppComponent, FileDashboardComponent, FileUploadComponent],
+  declarations: [AppComponent, FileDashboardComponent, FileUploadComponent, DragDirective],
   imports: [
     MatSlideToggleModule,
     BrowserModule,

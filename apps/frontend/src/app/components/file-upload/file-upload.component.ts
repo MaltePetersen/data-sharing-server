@@ -19,7 +19,9 @@ export class FileUploadComponent {
   token: { content: string; creation: Date } | undefined = undefined;
 
   fileName = '';
-
+  filesDropped(event: any) {
+    const file: File = event[0].file;
+    if (file) this.uploadFile(file)}
 
 
   initFileUpload() {
@@ -29,21 +31,21 @@ export class FileUploadComponent {
     }
   }
 
+  uploadFile(file: File){
+    this.fileName = file.name;
+    this.fileService.updateFileName(this.fileName)
+    this.dataService.uploadFile(file).subscribe((data: any) => {
+      this.token = {
+        content: data.content,
+        creation: new Date(data.creation),
+      };
+      this.fileService.updateToken(this.token)
+      this.router.navigate(['/dashboard'])
+    });
+  }
+
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
-
-
-    if (file) {
-      this.fileName = file.name;
-      this.fileService.updateFileName(this.fileName)
-      this.dataService.uploadFile(file).subscribe((data: any) => {
-        this.token = {
-          content: data.content,
-          creation: new Date(data.creation),
-        };
-        this.fileService.updateToken(this.token)
-        this.router.navigate(['/dashboard'])
-      });
-    }
+    if (file) this.uploadFile(file)
   }
 }
