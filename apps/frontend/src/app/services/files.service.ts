@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Token } from '../model/token.model';
+import { DataService } from './data.service';
 
 
 @Injectable({
@@ -8,6 +9,7 @@ import { Token } from '../model/token.model';
 })
 export class FileService  {
 
+  constructor(private dataService: DataService){}
   private token$$ = new BehaviorSubject<Token | null>(null);
   public token$ = this.token$$.asObservable();
 
@@ -16,10 +18,13 @@ export class FileService  {
 
   updateToken(token: Token | null){
     this.token$$.next(token)
-  }
+    this.dataService.persistToken(token)
+
+ }
 
   updateFileName(fileName: string){
     this.fileName$$.next(fileName);
+    this.dataService.persistName(fileName)
   }
 
 
