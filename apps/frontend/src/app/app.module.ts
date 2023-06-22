@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatChipsModule } from '@angular/material/chips';
 import { FileDashboardComponent } from './components/file-dashboard/file-dashboard.component';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { RouterModule } from '@angular/router';
+import { appRoutes } from './app.routes';
 
 @NgModule({
   declarations: [AppComponent, FileDashboardComponent, FileUploadComponent],
@@ -19,7 +21,7 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
     MatButtonModule,
     MatIconModule,
     CommonModule,
-    HttpClientModule,
+    HttpClientModule, RouterModule.forRoot(appRoutes),
   ],
   bootstrap: [AppComponent],
 })

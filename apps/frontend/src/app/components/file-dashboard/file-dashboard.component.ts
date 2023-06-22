@@ -1,6 +1,8 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { interval } from 'rxjs';
+import { Component,  OnInit } from '@angular/core';
+import { interval, tap } from 'rxjs';
+import { FileService } from '../../services/files.service';
+import { Token } from '../../model/token.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'data-sharing-server-file-dashboard',
@@ -9,8 +11,13 @@ import { interval } from 'rxjs';
 })
 export class FileDashboardComponent implements OnInit{
 
+  constructor(private fileService: FileService, router: Router){
+    fileService.fileName$.subscribe(name => this.fileName = name)
+    fileService.token$.pipe(tap(token => {
+      if(!token) router.navigate([''])
+    })).subscribe(token => this.token = token)
 
-
+  }
 
 
   milliSecondsInASecond = 1000;
@@ -25,15 +32,16 @@ export class FileDashboardComponent implements OnInit{
   public daysToDday = 0;
   untilDestroyed = 0;
 
-  @Input()
-  token!: { content: string; creation: Date; };
+  token!: Token | null;
 
-  @Input()
   fileName = '';
   ngOnInit(): void {
-    this.startTimer(
-      this.updateTimeWithAmountToDelete(this.token.creation, 30)
-    );  }
+    if(this.token){
+      this.startTimer(
+        this.updateTimeWithAmountToDelete(this.token.creation, 30)
+      );
+    }
+   }
 
   calculateUntilDestroyed(creation: Date) {
     this.untilDestroyed = creation.getTime() - new Date(Date.now()).getTime();
@@ -41,7 +49,8 @@ export class FileDashboardComponent implements OnInit{
   }
 
   reset() {
-    location.reload();
+    this.fileService.updateFileName('');
+    this.fileService.updateToken(null);
   }
 
   updateTimeWithAmountToDelete(creation: Date, min: number) {
