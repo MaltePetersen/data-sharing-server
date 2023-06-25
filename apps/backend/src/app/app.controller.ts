@@ -6,6 +6,7 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -24,9 +25,11 @@ export class AppController {
   }
 
   @Get('/file/:token')
-  currentFileToken(@Param() tokenCode: any) {
-    return this.appService.getFileByToken(tokenCode);
+  currentFileToken(@Param() tokenCode: any, @Query() query: any) {
+    const delteFile = !(query.delete === 'false')
+    return this.appService.getFileByToken(tokenCode, delteFile);
   }
+
 
   @Get()
   getAllData() {

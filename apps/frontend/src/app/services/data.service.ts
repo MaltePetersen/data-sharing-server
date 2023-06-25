@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of } from 'rxjs';
 import { Token } from '../model/token.model';
 import { State } from '../model/stats.model';
 
@@ -10,8 +10,8 @@ import { State } from '../model/stats.model';
 })
 export class DataService  {
 
-  private api = "http://20.234.11.142:3000"
-   // private api = "http://localhost:3000"
+  //private api = "http://20.234.11.142:3000"
+    private api = "http://localhost:3000"
 
   constructor(private http: HttpClient) {}
 
@@ -25,6 +25,10 @@ export class DataService  {
     const upload$ = this.http.post(`${this.api}/api`, formData);
 
     return upload$
+  }
+
+  checkIfFileExists(token: string){
+    return this.http.get(`${this.api}/api/file/${token}?delete=false`)
   }
 
   deleteFile(token: string){

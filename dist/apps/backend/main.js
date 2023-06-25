@@ -20,8 +20,9 @@ let AppController = AppController_1 = class AppController {
         this.appService = appService;
         this.logger = new common_1.Logger(AppController_1.name);
     }
-    currentFileToken(tokenCode) {
-        return this.appService.getFileByToken(tokenCode);
+    currentFileToken(tokenCode, query) {
+        const delteFile = !(query.delete === 'false');
+        return this.appService.getFileByToken(tokenCode, delteFile);
     }
     getAllData() {
         return this.appService.getAllFiles();
@@ -36,8 +37,9 @@ let AppController = AppController_1 = class AppController {
 tslib_1.__decorate([
     (0, common_1.Get)('/file/:token'),
     tslib_1.__param(0, (0, common_1.Param)()),
+    tslib_1.__param(1, (0, common_1.Query)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:paramtypes", [Object, Object]),
     tslib_1.__metadata("design:returntype", void 0)
 ], AppController.prototype, "currentFileToken", null);
 tslib_1.__decorate([
@@ -119,13 +121,13 @@ let AppService = class AppService {
     deleteByToken(token) {
         return this.filesService.deleteByToken(token);
     }
-    getFileByToken(tokenCode) {
+    getFileByToken(tokenCode, deleteFile) {
         const file = this.filesService.getByToken(tokenCode);
-        if (file) {
+        if (!file)
+            throw new common_1.HttpException('Does not exist', common_1.HttpStatus.NOT_FOUND);
+        if (deleteFile)
             this.filesService.delete(file.id);
-            return file;
-        }
-        throw new common_1.HttpException('Does not exist', common_1.HttpStatus.NOT_FOUND);
+        return file;
     }
     save(content) {
         const newFile = this.convertToFile(content);

@@ -24,14 +24,14 @@ export class AppService {
     return this.filesService.deleteByToken(token);
   }
 
-  getFileByToken(tokenCode: any){
-    const file = this.filesService.getByToken(tokenCode);
+  getFileByToken(tokenCode: any, deleteFile: boolean){
+  const file = this.filesService.getByToken(tokenCode);
 
-    if (file) {
-      this.filesService.delete(file.id)
-      return file;
-    }
-    throw new HttpException('Does not exist', HttpStatus.NOT_FOUND);
+  if(!file) throw new HttpException('Does not exist', HttpStatus.NOT_FOUND);
+    if (deleteFile) this.filesService.delete(file.id)
+
+    return file;
+
   }
 
   save(content: Content){
@@ -59,7 +59,7 @@ export class AppService {
       creation: new Date(Date.now()),
     };
   }
-  
+
   private calculateTimerLength(min: number){
     return min * 60 * 1000
    }
