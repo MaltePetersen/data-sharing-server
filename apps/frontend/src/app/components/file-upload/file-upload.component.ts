@@ -12,8 +12,6 @@ export class FileUploadComponent {
   @ViewChild('fileUpload')
   private fileUpload!: ElementRef<HTMLInputElement>;
 
-  isUploaded = false;
-
   constructor(private dataService: DataService,private router: Router, private fileService: FileService ) {}
 
   token: { content: string; creation: Date } | undefined = undefined;
@@ -25,10 +23,7 @@ export class FileUploadComponent {
 
 
   initFileUpload() {
-    if (!this.isUploaded) {
-      this.isUploaded = true;
       this.fileUpload.nativeElement.click();
-    }
   }
 
   uploadFile(file: File){
