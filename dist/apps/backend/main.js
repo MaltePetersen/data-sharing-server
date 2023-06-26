@@ -83,11 +83,15 @@ const common_1 = __webpack_require__("@nestjs/common");
 const app_controller_1 = __webpack_require__("./src/app/app.controller.ts");
 const app_service_1 = __webpack_require__("./src/app/app.service.ts");
 const files_service_1 = __webpack_require__("./src/app/files.service.ts");
+const serve_static_1 = __webpack_require__("@nestjs/serve-static");
+const path_1 = __webpack_require__("path");
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', 'frontend'),
+            }),],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, files_service_1.FilesService],
     })
@@ -237,6 +241,13 @@ module.exports = require("@nestjs/platform-express");
 
 /***/ }),
 
+/***/ "@nestjs/serve-static":
+/***/ ((module) => {
+
+module.exports = require("@nestjs/serve-static");
+
+/***/ }),
+
 /***/ "rxjs":
 /***/ ((module) => {
 
@@ -255,6 +266,13 @@ module.exports = require("tslib");
 /***/ ((module) => {
 
 module.exports = require("uuid");
+
+/***/ }),
+
+/***/ "path":
+/***/ ((module) => {
+
+module.exports = require("path");
 
 /***/ })
 
