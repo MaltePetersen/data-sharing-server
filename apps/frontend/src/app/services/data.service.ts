@@ -10,8 +10,8 @@ import { State } from '../model/stats.model';
 })
 export class DataService  {
 
-  //private api = "http://20.234.11.142:3000"
-    private api = "http://localhost:3000"
+  private api = "http://20.234.11.142:3000"
+    //private api = "http://localhost:3000"
 
   constructor(private http: HttpClient) {}
 
